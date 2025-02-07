@@ -31,54 +31,6 @@ function HomePage(props) {
 export async function getStaticProps() {
   let meetups = [];
 
-  let client = null;
-  try {
-    client = await MongoClient.connect(databaseURL);
-  } catch (error) {
-    const msg = JSON.stringify(error);
-    throw new Error(
-      `Failed to connect to client, msg: ${msg}, databaseURL: ${databaseURL}`
-    );
-  }
-
-  let db = null;
-  try {
-    db = client.db();
-  } catch (error) {
-    const msg = JSON.stringify(error);
-    throw new Error(
-      `Failed to create db instance, msg: ${msg}, databaseURL: ${databaseURL}`
-    );
-  }
-
-  let meetupsCollection = null;
-  try {
-    meetupsCollection = db.collection("meetups");
-  } catch (error) {
-    const msg = JSON.stringify(error);
-    throw new Error(
-      `Failed to get collection, msg: ${msg}, databaseURL: ${databaseURL}`
-    );
-  }
-
-  try {
-    meetups = await meetupsCollection.find().toArray();
-  } catch (error) {
-    const msg = JSON.stringify(error);
-    throw new Error(
-      `Failed to find data in collection, msg: ${msg}, databaseURL: ${databaseURL}`
-    );
-  }
-
-  try {
-    client.close();
-  } catch (error) {
-    const msg = JSON.stringify(error);
-    throw new Error(
-      `Failed to close DB connection, msg: ${msg}, databaseURL: ${databaseURL}`
-    );
-  }
-  /*
   try {
     const client = await MongoClient.connect(databaseURL);
     const db = client.db();
@@ -88,16 +40,17 @@ export async function getStaticProps() {
 
     client.close();
   } catch (error) {
-    throw new Error("Failed to fetch meetups", error);
+    const msg = JSON.stringify(error);
+    throw new Error(`Failed to fetch meetups, error: ${msg}`);
   }
-*/
+
   return {
     props: {
       meetups: meetups?.map((meetup) => ({
         title: meetup.title,
         address: meetup.address,
         image: meetup.image,
-        id: meetup._id.toString(),
+        id: meetup._id?.toString(),
       })),
     },
     revalidate: 10,
