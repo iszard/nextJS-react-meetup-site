@@ -36,7 +36,9 @@ export async function getStaticProps() {
     client = await MongoClient.connect(databaseURL);
   } catch (error) {
     const msg = JSON.stringify(error);
-    throw new Error("Failed to connect to client", { msg, databaseURL });
+    throw new Error(
+      `Failed to connect to client, msg: ${msg}, databaseURL: ${databaseURL}`
+    );
   }
 
   let db = null;
@@ -44,7 +46,9 @@ export async function getStaticProps() {
     db = client.db();
   } catch (error) {
     const msg = JSON.stringify(error);
-    throw new Error("Failed to create db instance", msg);
+    throw new Error(
+      `Failed to create db instance, msg: ${msg}, databaseURL: ${databaseURL}`
+    );
   }
 
   let meetupsCollection = null;
@@ -52,21 +56,27 @@ export async function getStaticProps() {
     meetupsCollection = db.collection("meetups");
   } catch (error) {
     const msg = JSON.stringify(error);
-    throw new Error("Failed to get collection", msg);
+    throw new Error(
+      `Failed to get collection, msg: ${msg}, databaseURL: ${databaseURL}`
+    );
   }
 
   try {
     meetups = await meetupsCollection.find().toArray();
   } catch (error) {
     const msg = JSON.stringify(error);
-    throw new Error("Failed to find data in collection", msg);
+    throw new Error(
+      `Failed to find data in collection, msg: ${msg}, databaseURL: ${databaseURL}`
+    );
   }
 
   try {
     client.close();
   } catch (error) {
     const msg = JSON.stringify(error);
-    throw new Error("Failed to close DB connection", msg);
+    throw new Error(
+      `Failed to close DB connection, msg: ${msg}, databaseURL: ${databaseURL}`
+    );
   }
   /*
   try {
