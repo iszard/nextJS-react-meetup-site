@@ -36,7 +36,7 @@ export async function getStaticProps() {
     client = await MongoClient.connect(databaseURL);
   } catch (error) {
     const msg = JSON.stringify(error);
-    throw new Error("Failed to connect to client", msg);
+    throw new Error("Failed to connect to client", { msg, databaseURL });
   }
 
   let db = null;
