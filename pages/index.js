@@ -1,6 +1,7 @@
 import { MongoClient } from "mongodb";
 import Head from "next/head";
 import MeetupList from "../components/meetups/MeetupList";
+import { databaseURL } from "../src/database";
 
 function HomePage(props) {
   return (
@@ -39,7 +40,7 @@ export async function getStaticProps() {
 
     (await client).close();
   } catch (error) {
-    throw new Error("Failed to fetch meetups");
+    throw new Error("Failed to fetch meetups", error);
   }
 
   return {
