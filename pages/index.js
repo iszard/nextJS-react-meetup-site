@@ -40,7 +40,7 @@ export async function getStaticProps() {
 
   let db = null;
   try {
-    db = (await client).db();
+    db = client.db();
   } catch (error) {
     throw new Error("Failed to create db instance", JSON.stringify(error));
   }
@@ -59,7 +59,7 @@ export async function getStaticProps() {
   }
 
   try {
-    (await client).close();
+    client.close();
   } catch (error) {
     throw new Error("Failed to close DB connection", JSON.stringify(error));
   }
