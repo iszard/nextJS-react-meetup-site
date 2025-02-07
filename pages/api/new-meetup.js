@@ -8,12 +8,12 @@ async function handler(req, res) {
 
     try {
       const client = await MongoClient.connect(databaseURL);
-      const db = (await client).db();
+      const db = client.db();
       const meetupsCollection = db.collection("meetups");
 
       const result = await meetupsCollection.insertOne(data);
 
-      (await client).close();
+      client.close();
 
       res.status(201).json({ message: "Meetup inserted!" });
     } catch (error) {

@@ -71,12 +71,12 @@ export async function getStaticProps() {
 
   try {
     const client = MongoClient.connect(databaseURL);
-    const db = (await client).db();
+    const db = client.db();
     const meetupsCollection = db.collection("meetups");
 
     meetups = await meetupsCollection.find().toArray();
 
-    (await client).close();
+    client.close();
   } catch (error) {
     throw new Error("Failed to fetch meetups", error);
   }

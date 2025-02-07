@@ -25,18 +25,18 @@ export async function getStaticPaths(context) {
 
   try {
     const client = await MongoClient.connect(databaseURL);
-    const db = (await client).db();
+    const db = client.db();
     const meetupsCollection = db.collection("meetups");
 
     meetups = await meetupsCollection.find({}, { _id: 1 }).toArray();
 
-    (await client).close();
+    client.close();
   } catch (error) {
     throw new Error("Failed to fetch meetups");
   }
 
   return {
-    fallback: false,
+    fallback: "blocking",
     paths: meetups.map((meetup) => ({
       params: { meetupId: meetup._id.toString() },
     })),
@@ -50,14 +50,14 @@ export async function getStaticProps(context) {
 
   try {
     const client = MongoClient.connect(databaseURL);
-    const db = (await client).db();
+    const db = client.db();
     const meetupsCollection = db.collection("meetups");
 
     selectedMeetup = await meetupsCollection.findOne({
       _id: new ObjectId(meetupId),
     });
 
-    (await client).close();
+    client.close();
   } catch (error) {
     throw new Error("Failed to fetch meetups");
   }
