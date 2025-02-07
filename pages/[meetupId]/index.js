@@ -49,7 +49,7 @@ export async function getStaticProps(context) {
   let selectedMeetup = {};
 
   try {
-    const client = MongoClient.connect(databaseURL);
+    const client = await MongoClient.connect(databaseURL);
     const db = client.db();
     const meetupsCollection = db.collection("meetups");
 

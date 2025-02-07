@@ -68,9 +68,9 @@ export async function getStaticProps() {
     const msg = JSON.stringify(error);
     throw new Error("Failed to close DB connection", msg);
   }
-
+  /*
   try {
-    const client = MongoClient.connect(databaseURL);
+    const client = await MongoClient.connect(databaseURL);
     const db = client.db();
     const meetupsCollection = db.collection("meetups");
 
@@ -80,7 +80,7 @@ export async function getStaticProps() {
   } catch (error) {
     throw new Error("Failed to fetch meetups", error);
   }
-
+*/
   return {
     props: {
       meetups: meetups?.map((meetup) => ({
