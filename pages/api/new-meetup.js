@@ -7,7 +7,7 @@ async function handler(req, res) {
     // const { title, image, address, description } = data;
 
     try {
-      const client = MongoClient.connect(databaseURL);
+      const client = await MongoClient.connect(databaseURL);
       const db = (await client).db();
       const meetupsCollection = db.collection("meetups");
 

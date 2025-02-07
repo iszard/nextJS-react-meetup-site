@@ -35,46 +35,51 @@ export async function getStaticProps() {
   try {
     client = await MongoClient.connect(databaseURL);
   } catch (error) {
-    throw new Error("Failed to connect to client", JSON.stringify(error));
+    const msg = JSON.stringify(error);
+    throw new Error("Failed to connect to client", msg);
   }
 
   let db = null;
   try {
     db = client.db();
   } catch (error) {
-    throw new Error("Failed to create db instance", JSON.stringify(error));
+    const msg = JSON.stringify(error);
+    throw new Error("Failed to create db instance", msg);
   }
 
   let meetupsCollection = null;
   try {
     meetupsCollection = db.collection("meetups");
   } catch (error) {
-    throw new Error("Failed to get collection", JSON.stringify(error));
+    const msg = JSON.stringify(error);
+    throw new Error("Failed to get collection", msg);
   }
 
   try {
     meetups = await meetupsCollection.find().toArray();
   } catch (error) {
-    throw new Error("Failed to find data in collection", JSON.stringify(error));
+    const msg = JSON.stringify(error);
+    throw new Error("Failed to find data in collection", msg);
   }
 
   try {
     client.close();
   } catch (error) {
-    throw new Error("Failed to close DB connection", JSON.stringify(error));
+    const msg = JSON.stringify(error);
+    throw new Error("Failed to close DB connection", msg);
   }
 
-  // try {
-  //   const client = MongoClient.connect(databaseURL);
-  //   const db = (await client).db();
-  //   const meetupsCollection = db.collection("meetups");
+  try {
+    const client = MongoClient.connect(databaseURL);
+    const db = (await client).db();
+    const meetupsCollection = db.collection("meetups");
 
-  //   meetups = await meetupsCollection.find().toArray();
+    meetups = await meetupsCollection.find().toArray();
 
-  //   (await client).close();
-  // } catch (error) {
-  //   throw new Error("Failed to fetch meetups", error);
-  // }
+    (await client).close();
+  } catch (error) {
+    throw new Error("Failed to fetch meetups", error);
+  }
 
   return {
     props: {
