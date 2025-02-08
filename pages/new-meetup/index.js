@@ -20,6 +20,7 @@ function NewMeetupPage() {
 
     router.push("/");
   }
+
   return (
     <>
       <Head>

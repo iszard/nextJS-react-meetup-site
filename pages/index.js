@@ -29,32 +29,30 @@ function HomePage(props) {
 // }
 
 export async function getStaticProps() {
-  let meetups = [];
-
   try {
     const client = await MongoClient.connect(databaseURL);
     const db = client.db();
     const meetupsCollection = db.collection("meetups");
 
-    meetups = await meetupsCollection.find().toArray();
+    const meetups = await meetupsCollection.find().toArray();
 
     client.close();
+
+    return {
+      props: {
+        meetups: meetups?.map((meetup) => ({
+          title: meetup.title,
+          address: meetup.address,
+          image: meetup.image,
+          id: meetup._id?.toString(),
+        })),
+      },
+      revalidate: 10,
+    };
   } catch (error) {
     const msg = JSON.stringify(error);
     throw new Error(`Failed to fetch meetups, error: ${msg}`);
   }
-
-  return {
-    props: {
-      meetups: meetups?.map((meetup) => ({
-        title: meetup.title,
-        address: meetup.address,
-        image: meetup.image,
-        id: meetup._id?.toString(),
-      })),
-    },
-    revalidate: 10,
-  };
 }
 
 export default HomePage;

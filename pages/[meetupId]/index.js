@@ -21,58 +21,54 @@ function MeetupDetailPage({ meetupData }) {
 }
 
 export async function getStaticPaths(context) {
-  let meetups = [];
-
   try {
     const client = await MongoClient.connect(databaseURL);
     const db = client.db();
     const meetupsCollection = db.collection("meetups");
 
-    meetups = await meetupsCollection.find({}, { _id: 1 }).toArray();
+    const meetups = await meetupsCollection.find({}, { _id: 1 }).toArray();
 
     client.close();
+
+    return {
+      fallback: "blocking",
+      paths: meetups.map((meetup) => ({
+        params: { meetupId: meetup._id.toString() },
+      })),
+    };
   } catch (error) {
     throw new Error("Failed to fetch meetups");
   }
-
-  return {
-    fallback: "blocking",
-    paths: meetups.map((meetup) => ({
-      params: { meetupId: meetup._id.toString() },
-    })),
-  };
 }
 
 export async function getStaticProps(context) {
   const meetupId = context.params.meetupId;
 
-  let selectedMeetup = {};
-
   try {
     const client = await MongoClient.connect(databaseURL);
     const db = client.db();
     const meetupsCollection = db.collection("meetups");
 
-    selectedMeetup = await meetupsCollection.findOne({
+    const selectedMeetup = await meetupsCollection.findOne({
       _id: new ObjectId(meetupId),
     });
 
     client.close();
+
+    return {
+      props: {
+        meetupData: {
+          id: selectedMeetup._id?.toString(),
+          title: selectedMeetup.title,
+          address: selectedMeetup.address,
+          image: selectedMeetup.image,
+          description: selectedMeetup.description,
+        },
+      },
+    };
   } catch (error) {
     throw new Error("Failed to fetch meetups");
   }
-
-  return {
-    props: {
-      meetupData: {
-        id: selectedMeetup._id?.toString(),
-        title: selectedMeetup.title,
-        address: selectedMeetup.address,
-        image: selectedMeetup.image,
-        description: selectedMeetup.description,
-      },
-    },
-  };
 }
 
 export default MeetupDetailPage;
